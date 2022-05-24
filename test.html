@@ -1,0 +1,141 @@
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LeChapeau.io</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/smappio/lechapeau/test.css">
+
+</head>
+
+<body :class="{ 'theme-dark': dark }" x-data="data()">
+
+  <header class="z-30 py-4 bg-gray-50 dark:bg-gray-900">
+    <div class="flex container items-center justify-between h-full px-6 mx-auto text-gray-800 dark:text-gray-200">
+      <h1 class="ml-6 text-lg font-bold ">
+        <span class="fab fa-redhat mr-2"></span>lechapeau.io
+      </h1>
+      <!-- Theme toggler -->
+      <li class="flex">
+        <button class="rounded-md focus:outline-none focus:shadow-outline-purple" @click="toggleTheme" aria-label="Toggle color mode">
+          <template x-if="!dark">
+            <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+          </template>
+          <template x-if="dark">
+            <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
+            </svg>
+          </template>
+        </button>
+      </li>
+    </div>
+    </div>
+
+    <div class="h-screen bg-gray-50 dark:bg-gray-900">
+      <div class="card relative flex flex-col bg-white dark:bg-gray-800 mx-auto shadow my-6 z-10" style="width: auto; max-width: 960px;">
+        <img id="cover" class="w-full object-cover absolute top-0" style="max-height: 7rem;" src="https://unsplash.com/photos/h0Vxgz5tyXA/download?force=true&w=640" alt="Cover" />
+        <div class="profile w-full flex text-white z-20" style="margin: .75rem; margin-left: 4rem;">
+          <img id="avatar" class="p-1 rounded-full mt-8 bg-white dark:bg-gray-800" style="width: 7rem; height: 7rem;" src="https://images.pexels.com/photos/61100/pexels-photo-61100.jpeg?crop=faces&fit=crop&h=200&w=200&auto=compress&cs=tinysrgb" alt="Avatar" />
+          <div class="title text-xl font-bold flex flex-col" style="margin-top: 4rem; margin-left: 2rem;">
+            <div id="name" class="name" style="overflow-wrap: break-word;">Sarah</div>
+
+          </div>
+        </div>
+        <div class="buttons flex absolute right-0 mr-6" style="bottom: 0; margin-top: .875rem; margin-bottom: .625rem;">
+          <button class="flex items-center justify-between px-10 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+            <span>tip</span>
+            <svg class="w-4 h-4 ml-2 -mr-1" fill="currentColor" aria-hidden="true" viewBox="0 0 20 20">
+              <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" fill-rule="evenodd"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alpine Core & Init -->
+    <script defer src="https://unpkg.com/alpinejs@3.10.2/dist/cdn.min.js"></script>
+
+    <script>
+      const bodyTag = document.querySelector("html");
+
+      function data() {
+        function getThemeFromLocalStorage() {
+          // if user already changed the theme, use it
+          if (window.localStorage.getItem("dark")) {
+            return JSON.parse(window.localStorage.getItem("dark"));
+          }
+          // else return their preferences
+          return (
+            !!window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+          );
+        }
+
+        function setThemeToLocalStorage(value) {
+          window.localStorage.setItem("dark", value);
+        }
+
+        function setTheme(value) {
+          if (value) {
+            bodyTag.classList.add("dark");
+          } else {
+            bodyTag.classList.remove("dark");
+          }
+        }
+        setTheme(getThemeFromLocalStorage());
+        return {
+          dark: getThemeFromLocalStorage(),
+          toggleTheme() {
+            this.dark = !this.dark;
+            setTheme(this.dark);
+            setThemeToLocalStorage(this.dark);
+          },
+          isSideMenuOpen: false,
+          isPreviewOpen: false,
+          toggleSideMenu() {
+            this.isSideMenuOpen = !this.isSideMenuOpen;
+            this.isPreviewOpen = !this.isPreviewOpen;
+          },
+          closeSideMenu() {
+            this.isSideMenuOpen = false;
+            this.isPreviewOpen = false;
+          },
+          isNotificationsMenuOpen: false,
+          toggleNotificationsMenu() {
+            this.isNotificationsMenuOpen = !this.isNotificationsMenuOpen;
+          },
+          closeNotificationsMenu() {
+            this.isNotificationsMenuOpen = false;
+          },
+          isProfileMenuOpen: false,
+          toggleProfileMenu() {
+            this.isProfileMenuOpen = !this.isProfileMenuOpen;
+          },
+          closeProfileMenu() {
+            this.isProfileMenuOpen = false;
+          },
+          isPagesMenuOpen: false,
+          togglePagesMenu() {
+            this.isPagesMenuOpen = !this.isPagesMenuOpen;
+          },
+          // Modal
+          isModalOpen: false,
+          trapCleanup: null,
+          openModal() {
+            this.isModalOpen = true;
+            this.trapCleanup = focusTrap(document.querySelector("#modal"));
+          },
+          closeModal() {
+            this.isModalOpen = false;
+            this.trapCleanup();
+          }
+        };
+      }
+    </script>
+</body>
+
+</html>
